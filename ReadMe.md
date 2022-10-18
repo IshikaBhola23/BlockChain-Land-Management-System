@@ -1,4 +1,4 @@
-# Blockchain Project Assignment 1
+# Blockchain Land Management System
 
 ### This project is a basic implementation of the consensus algorithm DPoS(Delegated Proof of Stake) in a blockchain for a Land Management System.
 
