@@ -226,26 +226,30 @@ ss << nIndex << sPrevHash << trans1.tTime << trans1.buyerID << trans1.sellerID <
 
 ## Function to view transaction history of a land
 
-// Function to print all the transaction history related to a particular land
+Function to print all the transaction history related to a particular land
 void TransactionHistory(int ID, vector<Transaction> &allTrans)
+
+```c++
 {
-int cnt = 0;
-if (allTrans.size() == 0)
-{
-cout << "No transactions have occured in the system yet\n";
-}
-for (int i = 0; i < allTrans.size(); i++)
-{
-if (allTrans[i].landID == ID)
-{
-cout << "This land was successfully sold by " << allTrans[i].sellerID << " to " << allTrans[i].buyerID << "\n"
-<< endl;
-cnt++;
-}
-}
-if (cnt == 0 && allTrans.size() != 0)
-{
-cout << "There are no transactions on the land yet!\n";
-}
+    int cnt = 0;
+    if (allTrans.size() == 0)
+        {
+        cout << "No transactions have occured in the system yet\n";
+        }
+    for (int i = 0; i < allTrans.size(); i++)
+        {
+        if (allTrans[i].landID == ID)
+            {
+            cout << "This land was successfully sold by " << allTrans[i].sellerID << " to " << allTrans[i].buyerID << "\n"
+            << endl;
+            cnt++;
+            }
+        }
+    if (cnt == 0 && allTrans.size() != 0)
+    {
+    cout << "There are no transactions on the land yet!\n";
+    }
 return;
+```
+
 }
