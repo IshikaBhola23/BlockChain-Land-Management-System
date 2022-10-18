@@ -43,21 +43,20 @@ Here, in DPoS ,user's vote weight is proportional to their stake rather than blo
 
 # Blockchain Implementation
 
-
 ## The Blockchain class
+
     class Blockchain {
+
 public:
-    Blockchain();
+Blockchain();
 
     void AddBlock(Block bNew);
 
     vector<Block> vChain;
 
 private:
-    Block GetLastBlock() const;
+Block GetLastBlock() const;
 };
-
-
 
 ## Implementation of DPoS in Land Management System's Blockchain
 
@@ -73,7 +72,6 @@ private:
 
 }
 
-
 ## Hashing Algorithm using SHA256
 
 SHA 256 is a part of the SHA 2 family of algorithms, where SHA stands for Secure Hash Algorithm. Published in 2001, it was a joint effort between the NSA and NIST to introduce a successor to the SHA 1 family, which was slowly losing strength against brute force attacks.
@@ -87,17 +85,18 @@ Each node that has a stake in the system can delegate the validation of a transa
 
 void assignStakes(vector<Transaction>& allTrans, int idx)
 {
-    if(idStakes.find(idx)==idStakes.end())
-    {
-        idStakes[idx]=rand()%100;
-    }
+if(idStakes.find(idx)==idStakes.end())
+{
+idStakes[idx]=rand()%100;
+}
 }
 
-
 # Mining a Block (includes a simple program to print the list of selected delegates)
+
     void Block::MineBlock()
+
 {
-    vector<pair<int, int>> votes=voting();
+vector<pair<int, int>> votes=voting();
 
     string str1=to_string(votes[0].second);
     string str2=to_string(votes[1].second);
@@ -114,9 +113,11 @@ void assignStakes(vector<Transaction>& allTrans, int idx)
     while (sHash.substr(0,n1) != str1 );
 
     cout << "Block mined: " << sHash << endl;
+
 }
 
 # Merkle Tree Implementation
+
     string Block::giveRoot() {
     vector<Node*> nodes;
     int counter=numtrans;
@@ -129,18 +130,18 @@ void assignStakes(vector<Transaction>& allTrans, int idx)
         c++;
     }
     vector<Node*> hashednodes;
-    
-    while (nodes.size() != 1) 
+
+    while (nodes.size() != 1)
     {
-        for (unsigned int l = 0, n = 0; l < nodes.size(); l = l + 2, n++) 
+        for (unsigned int l = 0, n = 0; l < nodes.size(); l = l + 2, n++)
         {
-            if (l != nodes.size() - 1) 
+            if (l != nodes.size() - 1)
             {
                 Node* temp=new Node(sha256(nodes[l]->hash + nodes[l+1]->hash)); // checks for adjacent block
                 hashednodes.push_back(temp); // combine and hash adjacent blocks
                 hashednodes[n]->left = nodes[l]; // assign children
                 hashednodes[n]->right = nodes[l+1];
-            } 
+            }
             else
             {
                 hashednodes.push_back(nodes[l]);
@@ -150,38 +151,44 @@ void assignStakes(vector<Transaction>& allTrans, int idx)
         hashednodes.clear();
     }
     return nodes[0]->hash;
+
 }
 
 ## Hashing the Transactions
+
     inline string Transaction::CalculateTransHash() const
+
 {
-    stringstream ss;
-    ss << buyerID << sellerID << landID << tTime;
+stringstream ss;
+ss << buyerID << sellerID << landID << tTime;
 
     return sha256(ss.str());
+
 }
 
 ## This function helps us calculate the root hash of a particular block.
+
 The merkle root of the block gives us the summary of all the transaction and their hashes via the merkle tree and is stored in the block header.
 
     inline string Block::CalculateHash() const
+
 {
-    stringstream ss;
-    ss << nIndex << sPrevHash << trans1.tTime << trans1.buyerID << trans1.sellerID << trans2.tTime << trans2.buyerID << trans2.sellerID <<trans3.tTime << trans3.buyerID << trans3.sellerID<< nNonce;
+stringstream ss;
+ss << nIndex << sPrevHash << trans1.tTime << trans1.buyerID << trans1.sellerID << trans2.tTime << trans2.buyerID << trans2.sellerID <<trans3.tTime << trans3.buyerID << trans3.sellerID<< nNonce;
 
     return sha256(ss.str());
+
 }
 
-
-
 ## Function to transfer land
+
     void transferLand(vector<Transaction> &allTrans){
     Transaction dummy;
         cout<<"Please enter the unique Buyer ID\n";
         cin >> dummy.buyerID;
-        cout<<"Please enter the unique Seller ID\n";  
+        cout<<"Please enter the unique Seller ID\n";
         cin>> dummy.sellerID ;
-        cout<<"Please enter the unique Land ID\n"; 
+        cout<<"Please enter the unique Land ID\n";
         cin>> dummy.landID;
         cout<<allTrans.size();
 
@@ -194,17 +201,17 @@ The merkle root of the block gives us the summary of all the transaction and the
         }
         else
         {
-            
+
             allTrans.push_back(dummy);
-            
+
             for(int i=0;i<id_lands[dummy.sellerID].size();i++)
             {
-                
+
                 if(id_lands[dummy.sellerID][i]==dummy.landID)
                 {
-                    
+
                     auto it=find(id_lands[dummy.sellerID].begin(), id_lands[dummy.sellerID].end(), dummy.landID)-id_lands[dummy.sellerID].begin();
-                    
+
                     id_lands[dummy.sellerID].erase(it+id_lands[dummy.sellerID].begin());
                     cout << "The land " << dummy.landID << " has been transferred from " << dummy.sellerID << " to " << dummy.buyerID<<"\n\n";
                     break;
@@ -212,20 +219,33 @@ The merkle root of the block gives us the summary of all the transaction and the
 
             }
             id_lands[dummy.buyerID].push_back(dummy.landID);
-            
+
         }
+
 }
 
-
 ## Function to view transaction history of a land
-    void TransactionHistory(int ID,vector<Transaction> &allTrans){
-    cout<<allTrans.size();
-  for(int i=0;i<allTrans.size();i++)
-  {
-    if(allTrans[i].landID==ID)
-    {
-        cout<<"This land was successfully sold by "<<allTrans[i].sellerID<<" to "<<allTrans[i].buyerID;
-    }
-  }
-  return;
+
+// Function to print all the transaction history related to a particular land
+void TransactionHistory(int ID, vector<Transaction> &allTrans)
+{
+int cnt = 0;
+if (allTrans.size() == 0)
+{
+cout << "No transactions have occured in the system yet\n";
+}
+for (int i = 0; i < allTrans.size(); i++)
+{
+if (allTrans[i].landID == ID)
+{
+cout << "This land was successfully sold by " << allTrans[i].sellerID << " to " << allTrans[i].buyerID << "\n"
+<< endl;
+cnt++;
+}
+}
+if (cnt == 0 && allTrans.size() != 0)
+{
+cout << "There are no transactions on the land yet!\n";
+}
+return;
 }
